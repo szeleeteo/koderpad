@@ -22,6 +22,7 @@ INSERT INTO orders (order_id, customer_id, order_date, product_name, quantity, p
 
 
 -- Question 1: Write a query to find the month with the highest total sales (revenue).
+-- Hint: You can use to_char() function to extract the month from the order_date column.
 
 
 
