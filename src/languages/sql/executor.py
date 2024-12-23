@@ -82,7 +82,7 @@ def run():
             format_func=lambda x: x.replace(SQL_FILE_EXT, "").title(),
             key="sql_exercise",
         )
-        show_all_tables = st.toggle("Show all tables in the database", False)
+        show_all_tables = st.toggle("Show all tables in the database", True)
 
     tables_panel = st.container()
 
