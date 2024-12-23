@@ -14,6 +14,7 @@ from .settings import SQL_EDITOR_SETTINGS
 
 EXERCISE_DIR = Path(__file__).resolve().parent / "exercises"
 SQL_FILE_EXT = ".sql"
+DROP_SCHEMA_PUBLIC = "DROP SCHEMA public CASCADE; CREATE SCHEMA public;"
 
 
 @st.cache_resource
@@ -26,6 +27,9 @@ engine = get_engine()
 
 
 def execute_query(query: str):
+    # refresh public schema each time before executing a query
+    query = f"{DROP_SCHEMA_PUBLIC}\n\n{query}"
+
     try:
         with engine.begin() as conn:
             result = conn.execute(sa.text(query))
@@ -69,15 +73,6 @@ def show_tables(table_names: list[str]):
                 st.error(f"Error fetching table {table_name}: {e}")
 
 
-def drop_all_tables():
-    try:
-        query = "DROP SCHEMA public CASCADE; CREATE SCHEMA public;"
-        with engine.begin() as conn:
-            conn.execute(sa.text(query))
-    except Exception as e:
-        st.error(f"Error dropping all tables: {e}")
-
-
 def run():
     with st.sidebar:
         ex_files = get_files(EXERCISE_DIR, SQL_FILE_EXT)
@@ -94,7 +89,6 @@ def run():
     ex_text = (EXERCISE_DIR / selected_exercise).read_text()
     response_dict = code_editor(code=ex_text, key="sql_editor", **SQL_EDITOR_SETTINGS)
 
-    drop_all_tables()
     query_sql = response_dict["text"].strip()
 
     if query_sql:
