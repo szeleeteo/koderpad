@@ -11,7 +11,7 @@ from utils import RUN_BUTTON
 
 SQL_EDITOR_SETTINGS = {
     "lang": "sql",
-    "height": [12, 12],
+    "height": [16, 16],
     "theme": "default",
     "focus": True,
     "buttons": [RUN_BUTTON],

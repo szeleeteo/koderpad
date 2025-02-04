@@ -68,7 +68,7 @@ def show_tables(table_names: list[str]):
             try:
                 with engine.begin() as conn:
                     df = pd.read_sql_query(query, con=conn)
-                st.dataframe(df, use_container_width=True, hide_index=True, height=213)
+                st.dataframe(df, use_container_width=True, hide_index=True, height=423)
             except Exception as e:
                 st.error(f"Error fetching table {table_name}: {e}")
 
@@ -84,20 +84,26 @@ def run():
         )
         show_all_tables = st.toggle("Show all tables in the database", True)
 
-    tables_panel = st.container()
+    query_col, tables_col = st.columns(2)
+
+    with tables_col:
+        tables_panel = st.container()
 
     ex_text = (EXERCISE_DIR / selected_exercise).read_text()
-    response_dict = code_editor(code=ex_text, key="sql_editor", **SQL_EDITOR_SETTINGS)
+    with query_col:
+        response_dict = code_editor(
+            code=ex_text, key="sql_editor", **SQL_EDITOR_SETTINGS
+        )
 
-    query_sql = response_dict["text"].strip()
+        query_sql = response_dict["text"].strip()
 
-    if query_sql:
-        st.write("Results")
-        execute_query(query_sql)
+        if query_sql:
+            st.write("Results")
+            execute_query(query_sql)
 
-    if show_all_tables:
-        with tables_panel:
-            all_tables = list_table_names()
-            show_tables(all_tables)
-            if all_tables:
-                st.caption("All tables in the database")
+        if show_all_tables:
+            with tables_panel:
+                all_tables = list_table_names()
+                show_tables(all_tables)
+                if all_tables:
+                    st.caption("All tables in the database")
