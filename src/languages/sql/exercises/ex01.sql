@@ -17,12 +17,13 @@ INSERT INTO orders (order_id, customer_id, order_date, product_name, quantity, p
 (106, 4, '2024-01-01', 'Laptop', 1, 950.00, 'Failed'),
 (107, 1, '2024-01-07', 'Laptop', 1, 1000.00, 'Completed'),
 (108, 4, '2024-04-15', 'Smartphone', 2, 450.00, 'Failed'),
-(109, 1, '2024-05-10', 'Tablet', 1, 350.00, 'Completed');
+(109, 1, '2024-05-10', 'Tablet', 1, 350.00, 'Completed'),
+(109, 1, '2024-03-22', 'Headphones', 1, 350.00, 'Failed');
 
 
-
--- Question 1: Write a query to find the month with the highest total sales (revenue).
--- Hint: You can use to_char() function to extract the month from the order_date column.
+-- Question 1: Write a query to find the year and month with the highest total sales
+-- Consider the available columns and state your assumptions
+-- Hint: You can use to_char(), date_trunc() or extract() function to extract the month from the order_date column.
 
 
 
