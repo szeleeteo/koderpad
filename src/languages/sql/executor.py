@@ -82,15 +82,18 @@ def run():
             format_func=lambda x: x.replace(SQL_FILE_EXT, "").title(),
             key="sql_exercise",
         )
-        show_all_tables = st.toggle("Show all tables in the database", True)
+        st.caption(
+            "Click Run button once after loading a different exercise to populate the table(s)"
+            "\n\nCollapse the sidebar for more space for the code editor and the tables"
+        )
 
     query_col, tables_col = st.columns(2)
 
     with tables_col:
         tables_panel = st.container()
 
-    ex_text = (EXERCISE_DIR / selected_exercise).read_text()
     with query_col:
+        ex_text = (EXERCISE_DIR / selected_exercise).read_text()
         response_dict = code_editor(
             code=ex_text, key="sql_editor", **SQL_EDITOR_SETTINGS
         )
@@ -101,9 +104,8 @@ def run():
             st.write("Results")
             execute_query(query_sql)
 
-        if show_all_tables:
-            with tables_panel:
-                all_tables = list_table_names()
-                show_tables(all_tables)
-                if all_tables:
-                    st.caption("All tables in the database")
+        with tables_panel:
+            all_tables = list_table_names()
+            show_tables(all_tables)
+            if all_tables:
+                st.caption("All tables in the database")

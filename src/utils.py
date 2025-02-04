@@ -54,5 +54,6 @@ RUN_BUTTON = {
     "hasText": True,
     "showWithIcon": True,
     "commands": ["submit"],
+    "alwaysOn": True,
     "style": {"bottom": "0.44rem", "right": "0.4rem"},
 }
