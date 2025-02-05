@@ -68,7 +68,7 @@ def show_tables(table_names: list[str]):
             try:
                 with engine.begin() as conn:
                     df = pd.read_sql_query(query, con=conn)
-                st.dataframe(df, use_container_width=True, hide_index=True, height=423)
+                st.dataframe(df, use_container_width=True, hide_index=True, height=387)
             except Exception as e:
                 st.error(f"Error fetching table {table_name}: {e}")
 
@@ -100,12 +100,10 @@ def run():
 
         query_sql = response_dict["text"].strip()
 
-        if query_sql:
-            st.write("Results")
-            execute_query(query_sql)
+    with tables_panel:
+        all_tables = list_table_names()
+        show_tables(all_tables)
 
-        with tables_panel:
-            all_tables = list_table_names()
-            show_tables(all_tables)
-            if all_tables:
-                st.caption("All tables in the database")
+    if query_sql:
+        st.subheader("Output")
+        execute_query(query_sql)
