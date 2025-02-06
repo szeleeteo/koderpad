@@ -100,10 +100,10 @@ def run():
 
         query_sql = response_dict["text"].strip()
 
-    with tables_panel:
-        all_tables = list_table_names()
-        show_tables(all_tables)
-
     if query_sql:
         st.subheader("Output")
         execute_query(query_sql)
+
+    with tables_panel:
+        all_tables = list_table_names()
+        show_tables(all_tables)
