@@ -13,18 +13,8 @@ clean: ## Remove general artifact files
 	find . -name '*.pyo' -delete
 	find . -name '__pycache__' -type d | xargs rm -rf
 
-venv: ## Create virtual environment if venv directory not present
-	`which ${PYTHON}` -m venv venv
-	venv/bin/pip install -U pip pip-tools wheel --no-cache-dir
-
-requirements.txt: venv requirements.in ## Generate requirements for release
-	venv/bin/pip-compile -o requirements.txt requirements.in
-
-update-req: venv requirements.in  ## Update requirements to fulfil dependencies minimally
-	venv/bin/pip-compile -o requirements.txt requirements.in
-
-install: venv requirements.txt ## Install dependencies for dev
-	venv/bin/pip-sync requirements.txt
+run: ## Run the app
+	uv run streamlit run src/main.py
 
 db: ## Run a Postgres database with env vars that matches the DB_URL_LOCAL env var
 	docker run -d --rm \
@@ -36,11 +26,3 @@ db: ## Run a Postgres database with env vars that matches the DB_URL_LOCAL env v
 	-e POSTGRES_DB=postgres \
 	-e TZ=UTC \
 	postgres:14
-
-
-run: install ## Run with dev dependencies
-	venv/bin/python -m streamlit run src/main.py
-
-run0: ## Run app much faster without syncing dependencies or updating alembic migration
-	venv/bin/python -m streamlit run src/main.py
-
