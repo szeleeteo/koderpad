@@ -4,7 +4,7 @@ import streamlit as st
 # run this before importing local modules
 st.set_page_config(
     page_title="Koderpad",
-    page_icon=":material/code:",
+    page_icon=":memo:",
     layout="wide",
     initial_sidebar_state="expanded",
 )
