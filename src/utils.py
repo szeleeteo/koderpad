@@ -24,10 +24,7 @@ def check_password():
         return True
 
     st.text_input(
-        "Password",
-        type="password",
-        on_change=_password_entered,
-        key="app_password",
+        "Password", type="password", on_change=_password_entered, key="app_password"
     )
 
     if "password_correct" in st.session_state:

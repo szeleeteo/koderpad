@@ -14,6 +14,9 @@ import utils
 from languages.python import executor as python_executor
 from languages.sql import executor as sql_executor
 
+if "app_password" not in st.session_state:
+    st.session_state["app_password"] = ""
+
 
 def main():
     with st.sidebar:
