@@ -17,10 +17,9 @@ SQL_FILE_EXT = ".sql"
 DROP_SCHEMA_PUBLIC = "DROP SCHEMA public CASCADE; CREATE SCHEMA public;"
 
 
-@st.cache_resource
 def get_engine() -> sa.Engine:
     engine_url = st.secrets["DATABASE_URL"]
-    return sa.create_engine(engine_url)
+    return sa.create_engine(url=engine_url, pool_pre_ping=True)
 
 
 engine = get_engine()
