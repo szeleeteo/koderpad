@@ -11,6 +11,7 @@ dependencies = [
     "sqlalchemy>=2.0.40",
     "streamlit>=1.44.1",
     "streamlit-code-editor>=0.1.22",
+    "watchdog>=6.0.0",
 ]
 
 [dependency-groups]
