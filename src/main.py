@@ -17,6 +17,11 @@ from languages.sql import executor as sql_executor
 if "app_password" not in st.session_state:
     st.session_state["app_password"] = ""
 
+executor_mapping = {
+    "Python": python_executor,
+    "SQL": sql_executor,
+}
+
 
 def main():
     with st.sidebar:
@@ -27,10 +32,7 @@ def main():
 
         language = st.selectbox("Select language", ["SQL", "Python"])
 
-    if language == "SQL":
-        sql_executor.run()
-    elif language == "Python":
-        python_executor.run()
+    executor_mapping[language].run()
 
 
 if __name__ == "__main__":
