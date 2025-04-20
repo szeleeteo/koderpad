@@ -88,8 +88,7 @@ def run():
             key="sql_exercise",
         )
         st.caption(
-            "Click Run button once after loading a different exercise to populate the table(s)"
-            "\n\nCollapse the sidebar for more space for the code editor and the tables"
+            "Click **Run** :arrow_forward: in the SQL Editor to show new table(s) after a different exercise is selected."
         )
 
     query_col, tables_col = st.columns(2)
@@ -97,10 +96,7 @@ def run():
     with query_col:
         ex_text = (EXERCISE_DIR / selected_exercise).read_text()
         response_dict = code_editor(
-            code=ex_text,
-            key="sql_editor",
-            # response_mode="select",  # https://discuss.streamlit.io/t/new-component-streamlit-code-editor-a-react-ace-code-editor-customized-to-fit-with-streamlit-with-some-extra-goodies-added-on-top/42868/16
-            **SQL_EDITOR_SETTINGS,
+            code=ex_text, key="sql_editor", **SQL_EDITOR_SETTINGS
         )
         # query_sql is only set after the user clicks the Run button
         query_sql = response_dict["text"].strip()
