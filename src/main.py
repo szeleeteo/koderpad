@@ -11,6 +11,7 @@ st.set_page_config(
 
 # Import local modules
 import utils
+from languages.docker import executor as dockerfile_executor
 from languages.python import executor as python_executor
 from languages.sql import executor as sql_executor
 
@@ -20,6 +21,7 @@ if "app_password" not in st.session_state:
 executor_mapping = {
     "Python": python_executor,
     "SQL": sql_executor,
+    "Dockerfile": dockerfile_executor,
 }
 
 
@@ -30,7 +32,7 @@ def main():
         if not utils.check_password():
             st.stop()
 
-        language = st.selectbox("Select language", ["SQL", "Python"])
+        language = st.selectbox("Select language", executor_mapping.keys())
 
     executor_mapping[language].run()
 
