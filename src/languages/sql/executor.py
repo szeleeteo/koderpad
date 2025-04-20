@@ -2,7 +2,6 @@
 from pathlib import Path
 
 # Import third-party library modules
-import pandas as pd
 import sqlalchemy as sa
 import streamlit as st
 from code_editor import code_editor
