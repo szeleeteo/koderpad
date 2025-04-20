@@ -30,7 +30,7 @@ def execute_query(query: str):
             st.dataframe(rows, hide_index=True, use_container_width=True)
     except sa.exc.ResourceClosedError:
         # Handle the case where no rows are returned (e.g., for DDL statements)
-                st.success("Query executed successfully!")
+        st.success("Query executed successfully!")
     except Exception as e:
         st.error(f"Error: {type(e)}")
 
@@ -86,21 +86,20 @@ def run():
 
     query_col, tables_col = st.columns(2)
 
-    with tables_col:
-        tables_panel = st.container()
-
     with query_col:
         ex_text = (EXERCISE_DIR / selected_exercise).read_text()
         response_dict = code_editor(
             code=ex_text, key="sql_editor", **SQL_EDITOR_SETTINGS
         )
-
+        # query_sql is only set after the user clicks the Run button
         query_sql = response_dict["text"].strip()
 
     if query_sql:
         st.subheader("Output")
         execute_query(query_sql)
 
-    with tables_panel:
-        all_tables = list_table_names()
-        show_tables(all_tables)
+        with tables_col:
+            tables_panel = st.container()
+            with tables_panel:
+                all_tables = list_table_names()
+                show_tables(all_tables)
