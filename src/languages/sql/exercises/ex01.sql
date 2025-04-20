@@ -24,8 +24,7 @@ INSERT INTO orders (order_id, customer_id, order_date, product_name, quantity, p
 (113, 1, '2024-05-20', 'Laptop', 4, 2000.00, 'Failed');
 
 
--- Question 1: Write a query to find the year and month with the highest total sales
--- Consider the available columns and state your assumptions
+-- Question 1: Write a query to find the year and month with the highest total completed sales. Consider the available columns and state your assumptions
 -- Hint: You can use to_char(), date_trunc() or extract() function to extract the month from the order_date column.
 
 
