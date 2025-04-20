@@ -99,7 +99,7 @@ def run():
         response_dict = code_editor(
             code=ex_text,
             key="sql_editor",
-            response_mode="blur",  # https://discuss.streamlit.io/t/new-component-streamlit-code-editor-a-react-ace-code-editor-customized-to-fit-with-streamlit-with-some-extra-goodies-added-on-top/42868/16
+            response_mode="select",  # https://discuss.streamlit.io/t/new-component-streamlit-code-editor-a-react-ace-code-editor-customized-to-fit-with-streamlit-with-some-extra-goodies-added-on-top/42868/16
             **SQL_EDITOR_SETTINGS,
         )
         # query_sql is only set after the user clicks the Run button
