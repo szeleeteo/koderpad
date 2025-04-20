@@ -53,4 +53,5 @@ RUN_BUTTON = {
     "commands": ["submit"],
     "alwaysOn": True,
     "style": {"bottom": "0.44rem", "right": "0.4rem"},
+    "bindKey": {"win": "Ctrl-Enter", "mac": "Command-Enter"},
 }
