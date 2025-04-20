@@ -17,6 +17,12 @@ SQL_FILE_EXT = ".sql"
 DROP_SCHEMA_PUBLIC = "DROP SCHEMA public CASCADE; CREATE SCHEMA public;"
 
 conn = st.connection(name="sql", type="sql", autocommit=True, ttl=3600)
+should_hide_tables = False
+
+
+def hide_tables():
+    global should_hide_tables
+    should_hide_tables = True
 
 
 def execute_query(query: str):
@@ -27,10 +33,11 @@ def execute_query(query: str):
         with conn.session as session:
             result = session.execute(sa.text(query))
             rows = result.fetchall()
+            st.subheader("Output")
             st.dataframe(rows, hide_index=True, use_container_width=True)
     except sa.exc.ResourceClosedError:
         # Handle the case where no rows are returned (e.g., for DDL statements)
-        st.success("Query executed successfully!")
+        pass
     except Exception as e:
         st.error(f"Error: {type(e)}")
 
@@ -77,6 +84,7 @@ def run():
             label="Load an exercise",
             options=ex_files,
             format_func=lambda x: x.replace(SQL_FILE_EXT, "").title(),
+            on_change=hide_tables,
             key="sql_exercise",
         )
         st.caption(
@@ -89,13 +97,18 @@ def run():
     with query_col:
         ex_text = (EXERCISE_DIR / selected_exercise).read_text()
         response_dict = code_editor(
-            code=ex_text, key="sql_editor", **SQL_EDITOR_SETTINGS
+            code=ex_text,
+            key="sql_editor",
+            response_mode="select",  # https://discuss.streamlit.io/t/new-component-streamlit-code-editor-a-react-ace-code-editor-customized-to-fit-with-streamlit-with-some-extra-goodies-added-on-top/42868/16
+            **SQL_EDITOR_SETTINGS,
         )
         # query_sql is only set after the user clicks the Run button
         query_sql = response_dict["text"].strip()
 
-    if query_sql:
-        st.subheader("Output")
+    global should_hide_tables
+    if should_hide_tables:
+        should_hide_tables = False
+    else:
         execute_query(query_sql)
 
         with tables_col:
