@@ -2,6 +2,7 @@
 from pathlib import Path
 
 # Import third-party library modules
+import pandas as pd
 import sqlalchemy as sa
 import streamlit as st
 from code_editor import code_editor
@@ -15,13 +16,13 @@ EXERCISE_DIR = Path(__file__).resolve().parent / "exercises"
 SQL_FILE_EXT = ".sql"
 DROP_SCHEMA_PUBLIC = "DROP SCHEMA public CASCADE; CREATE SCHEMA public;"
 
-conn = st.connection(name="sql", type="sql", autocommit=True, ttl=3600)
-should_hide_tables = False
+
+def get_engine() -> sa.Engine:
+    engine_url = st.secrets["DATABASE_URL"]
+    return sa.create_engine(url=engine_url, pool_pre_ping=True)
 
 
-def hide_tables():
-    global should_hide_tables
-    should_hide_tables = True
+engine = get_engine()
 
 
 def execute_query(query: str):
@@ -29,31 +30,30 @@ def execute_query(query: str):
     query = f"{DROP_SCHEMA_PUBLIC}\n\n{query}"
 
     try:
-        with conn.session as session:
-            result = session.execute(sa.text(query))
-            rows = result.fetchall()
-            st.subheader("Output")
-            st.dataframe(rows, hide_index=True, use_container_width=True)
-    except sa.exc.ResourceClosedError:
-        # Handle the case where no rows are returned (e.g., for DDL statements)
-        pass
+        with engine.begin() as conn:
+            result = conn.execute(sa.text(query))
+
+            if result.returns_rows:
+                df = pd.DataFrame(result.fetchall(), columns=list(result.keys()))
+                st.dataframe(df, hide_index=True, use_container_width=True)
+            else:
+                st.success("Query executed successfully!")
+
     except Exception as e:
-        st.error(f"Error: {type(e)}")
+        st.error(f"Error: {e}")
 
 
 def list_table_names() -> list[str]:
     query = "SELECT table_name FROM information_schema.tables WHERE table_schema = 'public';"
 
-    table_names = []
     try:
-        with conn.session as session:
-            result = session.execute(sa.text(query))
-            rows = result.fetchall()
-            table_names = [row[0] for row in rows]
+        with engine.begin() as conn:
+            result = conn.execute(sa.text(query))
+            return [row[0] for row in result.fetchall()]
+
     except Exception as e:
         st.error(f"Error fetching tables: {e}")
-
-    return table_names
+        return []
 
 
 def show_tables(table_names: list[str]):
@@ -66,12 +66,9 @@ def show_tables(table_names: list[str]):
         with table_tab:
             query = f"SELECT * FROM {table_name};"
             try:
-                with conn.session as session:
-                    result = session.execute(sa.text(query))
-                    rows = result.fetchall()
-                    st.dataframe(
-                        rows, use_container_width=True, hide_index=True, height=387
-                    )
+                with engine.begin() as conn:
+                    df = pd.read_sql_query(query, con=conn)
+                st.dataframe(df, use_container_width=True, hide_index=True, height=387)
             except Exception as e:
                 st.error(f"Error fetching table {table_name}: {e}")
 
@@ -83,31 +80,30 @@ def run():
             label="Load an exercise",
             options=ex_files,
             format_func=lambda x: x.replace(SQL_FILE_EXT, "").title(),
-            on_change=hide_tables,
             key="sql_exercise",
         )
         st.caption(
-            "Click **Run** :arrow_forward: in the SQL Editor to show new table(s) after a different exercise is selected."
+            "Click Run button once after loading a different exercise to populate the table(s)"
+            "\n\nCollapse the sidebar for more space for the code editor and the tables"
         )
 
     query_col, tables_col = st.columns(2)
+
+    with tables_col:
+        tables_panel = st.container()
 
     with query_col:
         ex_text = (EXERCISE_DIR / selected_exercise).read_text()
         response_dict = code_editor(
             code=ex_text, key="sql_editor", **SQL_EDITOR_SETTINGS
         )
-        # query_sql is only set after the user clicks the Run button
+
         query_sql = response_dict["text"].strip()
 
-    global should_hide_tables
-    if should_hide_tables:
-        should_hide_tables = False
-    else:
+    if query_sql:
+        st.subheader("Output")
         execute_query(query_sql)
 
-        with tables_col:
-            tables_panel = st.container()
-            with tables_panel:
-                all_tables = list_table_names()
-                show_tables(all_tables)
+    with tables_panel:
+        all_tables = list_table_names()
+        show_tables(all_tables)
