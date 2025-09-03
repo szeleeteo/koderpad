@@ -6,7 +6,6 @@ References
 - https://github.com/ajaxorg/ace/wiki/Configuring-Ace
 """
 
-# Import local modules
 from utils import RUN_BUTTON
 
 SQL_EDITOR_SETTINGS = {

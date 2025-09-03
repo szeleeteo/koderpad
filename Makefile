@@ -8,12 +8,21 @@ help: ## Display this help message
 	@echo "Please use \`make <target>\` where <target> is one of"
 	@awk -F ':.*?## ' '/^[a-zA-Z]/ && NF==2 {printf "\033[36m  %-25s\033[0m %s\n", $$1, $$2}' $(MAKEFILE_LIST)
 
-clean: ## Remove general artifact files
-	find . -name '*.pyc' -delete
-	find . -name '*.pyo' -delete
-	find . -name '__pycache__' -type d | xargs rm -rf
+clean: ## Remove virtual environment and cache
+	rm -rf .venv
+	rm -rf .ruff_cache
+	rm -rf .pytest_cache
+	rm .coverage
 
-run: ## Run the app
+init: ## Initialize the virtual environment and install dependencies
+	uv sync
+	uv tool run pre-commit install
+
+check: ## Run code checks with Ruff
+	uv tool run pre-commit autoupdate
+	uv tool run pre-commit run --all-files
+
+dev: ## Run the app
 	uv run streamlit run src/main.py
 
 db: ## Run a Postgres database with env vars that matches the DB_URL_LOCAL env var

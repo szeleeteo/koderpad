@@ -1,13 +1,10 @@
-# Import standard library modules
 from pathlib import Path
 
-# Import third-party library modules
 import pandas as pd
 import sqlalchemy as sa
 import streamlit as st
 from code_editor import code_editor
 
-# Import local modules
 from utils import get_files
 
 from .settings import SQL_EDITOR_SETTINGS
@@ -35,7 +32,7 @@ def execute_query(query: str):
 
             if result.returns_rows:
                 df = pd.DataFrame(result.fetchall(), columns=list(result.keys()))
-                st.dataframe(df, hide_index=True, use_container_width=True)
+                st.dataframe(df, hide_index=True, width="stretch")
             else:
                 st.success("Query executed successfully!")
 
@@ -68,7 +65,7 @@ def show_tables(table_names: list[str]):
             try:
                 with engine.begin() as conn:
                     df = pd.read_sql_query(query, con=conn)
-                st.dataframe(df, use_container_width=True, hide_index=True, height=387)
+                st.dataframe(df, width="stretch", hide_index=True, height=387)
             except Exception as e:
                 st.error(f"Error fetching table {table_name}: {e}")
 

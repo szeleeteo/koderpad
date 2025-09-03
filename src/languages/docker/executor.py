@@ -1,11 +1,8 @@
-# Import standard library modules
 from pathlib import Path
 
-# Import third-party library modules
 import streamlit as st
 from code_editor import code_editor
 
-# Import local modules
 from utils import get_files
 
 from .settings import DOCKERFILE_EDITOR_SETTINGS
