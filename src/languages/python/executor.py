@@ -1,4 +1,5 @@
 import contextlib
+import traceback
 from io import StringIO
 from pathlib import Path
 
@@ -21,6 +22,8 @@ def execute_script(script: str):
             exec(script)
         except Exception as e:
             st.error(f"Error: {e}")
+            error_trace = traceback.format_exc()
+            st.code(error_trace)
 
     st.code(output_buffer.getvalue(), language="text", wrap_lines=True)
 
