@@ -1,11 +1,11 @@
 """
 You are given a list of students data, where each student has a name, age and a list of grades.
 
-Write one Python function that fulfil the following tasks:
+Write a Python function that accepts the list and returns new list with the following criteria:
 
 - Include only students who are 18 or older.
-- Computes the average grade for students who meet the age requirement.
-- Returns a list of dictionaries, where each dictionary contains the student's name and their average grade.
+- Include a new key "average_grade" that contains the average of their grades.
+- Exclude the original "age" and "grades" key from the output.
 """
 
 students = [
