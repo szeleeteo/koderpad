@@ -9,7 +9,7 @@ References
 from utils import RUN_BUTTON
 
 PYTHON_EDITOR_SETTINGS = {
-    "height": [16, 16],
+    "height": [16, 24],
     "theme": "default",
     "focus": True,
     "buttons": [RUN_BUTTON],
