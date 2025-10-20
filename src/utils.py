@@ -1,11 +1,10 @@
-import hmac
 from pathlib import Path
 
 import streamlit as st
 
 
 def _password_entered():
-    if hmac.compare_digest(st.session_state["app_password"], st.secrets["APP_PWD"]):
+    if st.session_state["app_password"] == st.secrets["APP_PWD"]:
         st.session_state["password_correct"] = True
         del st.session_state["app_password"]
     else:
@@ -13,22 +12,21 @@ def _password_entered():
 
 
 def check_password():
-    """
-    Based on https://docs.streamlit.io/knowledge-base/deploy/authentication-without-sso
-    """
-    if st.secrets.get("APP_PWD") is None or st.session_state.get(
-        "password_correct", False
-    ):
-        return True
+    if st.secrets.get("APP_PWD") is None:
+        return True  # No password set
 
-    st.text_input(
-        "Password", type="password", on_change=_password_entered, key="app_password"
-    )
-
-    if "password_correct" in st.session_state:
+    if "password_correct" not in st.session_state:
+        st.text_input(
+            "Password", type="password", on_change=_password_entered, key="app_password"
+        )
+        return False
+    elif not st.session_state["password_correct"]:
+        st.text_input(
+            "Password", type="password", on_change=_password_entered, key="app_password"
+        )
         st.error("😕 Password incorrect")
-
-    return False
+        return False
+    return True
 
 
 def get_files(dir_path: Path, file_ext: str) -> list[str]:
