@@ -19,7 +19,8 @@ def execute_script(script: str):
 
     with contextlib.redirect_stdout(output_buffer):
         try:
-            exec(script)
+            namespace = {}
+            exec(script, namespace)
         except Exception as e:
             st.error(f"Error: {e}")
             error_trace = traceback.format_exc()
