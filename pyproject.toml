@@ -9,6 +9,7 @@ dependencies = [
     "pandas>=2.3.2",
     "psycopg2-binary>=2.9.10",
     "requests>=2.32.3",
+    "rich>=14.2.0",
     "sqlalchemy>=2.0.40",
     "streamlit>=1.44.1",
     "streamlit-code-editor>=0.1.22",
